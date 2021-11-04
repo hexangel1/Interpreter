@@ -1,0 +1,43 @@
+program "search max";
+
+begin
+{
+        $a = 3;
+        $b = 3;
+        $c = 3;
+        if ($a > $b) {
+                if ($a > $c) {
+                        print "max = $a = ", $a, endl;
+                } else {
+                        if ($a == $c) {
+                                print "max = $a = $c = ", $a, endl;
+                        } else {
+                                print "max = $c = ", $c, endl;
+                        }
+                }
+        } else {
+                if ($a == $b) {
+                        if ($a > $c) {
+                                print "max = $a = $b = ", $a, endl;
+                        } else {
+                                if ($a == $c) {
+                                        print "max = $a = $b = $c = ", $a, endl;
+                                } else {
+                                        print "max = $c = ", $c, endl;
+                                }
+                        }
+                } else {
+                        if ($b > $c) {
+                                print "max = $b = ", $b, endl;
+                        } else {
+                                if ($b == $c) {
+                                        print "max = $b = $c = ", $b, endl;
+                                } else {
+                                        print "max = $c = ", $c, endl;
+                                }
+                        }
+                }
+        }
+}
+end
+

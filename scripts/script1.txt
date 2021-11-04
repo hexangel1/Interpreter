@@ -1,0 +1,39 @@
+program "while";
+
+begin
+{
+        print "Enter your name >> ";
+        scan $name;
+@again:
+        $size = 2;
+        alloc $b $size;
+        print "Type strings:", endl;
+        $i = 0;
+        repeat
+        {
+                if ($i == $size) {
+                        $size = $size * 2;
+                        alloc $b $size;
+                }
+                print ">> " ;
+                scan $b[$i];
+                if ($b[$i] == "exit") {
+                        goto @exit;
+                }
+                inc $i;
+        }
+        until ($b[$i - 1] == "print")
+        print "Strings you have typed:", endl;
+        $j = 0;
+        while ($j < $i)
+        {
+                print $b[$j], endl;
+                inc $j;
+        }
+        free $b;
+        goto @again;
+@exit:
+        print "Goodbye, " + "dear " + $name, endl;
+}
+end
+

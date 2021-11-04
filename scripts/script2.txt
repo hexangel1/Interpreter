@@ -1,0 +1,27 @@
+program "test";
+
+begin
+{
+        $size = 5;
+        alloc $arr $size;
+        $i = 0;
+        while ($i < $size) {
+                scan $str;
+                $arr[$i] = int($str);
+                inc $i;
+        }
+        $min = $arr[0];
+        $min_pos = 0;
+        $i = 1;
+        while ($i < $size) {
+                if ($arr[$i] < $min) {
+                        $min = $arr[$i];
+                        $min_pos = $i;
+                }
+                inc $i;
+        }
+        free $arr;
+        print "min = ", $min, endl, "min_pos = ", $min_pos, endl;
+}
+end
+
