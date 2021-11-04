@@ -32,7 +32,6 @@ private:
         void Resize();
         void Rehash();
         static int Hash(const char *key, int size, int size2);
-        static bool Compare(const char *key1, const char *key2);
 };
 
 template <class T>
@@ -74,7 +73,7 @@ bool HashTable<T>::Add(const T& value, const char *key)
         int i = 0;
         int first_deleted = -1;
         while (array[h1] && i < buffer_size) {
-                if (Compare(array[h1]->key, key) && array[h1]->state)
+                if (!strcmp(array[h1]->key, key) && array[h1]->state)
                         return false;
                 if (!array[h1]->state && first_deleted == -1)
                         first_deleted = h1;
@@ -99,7 +98,7 @@ bool HashTable<T>::Remove(const char *key)
         int h2 = Hash(key, buffer_size, buffer_size + 1);
         int i = 0;
         while (array[h1] && i < buffer_size) {
-                if (Compare(array[h1]->key, key) && array[h1]->state) {
+                if (!strcmp(array[h1]->key, key) && array[h1]->state) {
                         array[h1]->state = false;
                         not_deleted--;
                         return true;
@@ -117,7 +116,7 @@ bool HashTable<T>::Find(const char *key) const
         int h2 = Hash(key, buffer_size, buffer_size + 1);
         int i = 0;
         while (array[h1] && i < buffer_size) {
-                if (Compare(array[h1]->key, key) && array[h1]->state)
+                if (!strcmp(array[h1]->key, key) && array[h1]->state)
                         return true;
                 h1 = (h1 + h2) % buffer_size;
                 i++;
@@ -132,7 +131,7 @@ T& HashTable<T>::operator[](const char *key) const
         int h2 = Hash(key, buffer_size, buffer_size + 1);
         int i = 0;
         while (array[h1] && i < buffer_size) {
-                if (Compare(array[h1]->key, key) && array[h1]->state)
+                if (!strcmp(array[h1]->key, key) && array[h1]->state)
                         return array[h1]->value;
                 h1 = (h1 + h2) % buffer_size;
                 i++;
@@ -195,12 +194,6 @@ int HashTable<T>::Hash(const char *key, int size, int size2)
                 hash = (size2 * hash + key[i]) % size;
         return (hash * 2 + 1) % size;
 
-}
-
-template <class T>
-inline bool HashTable<T>::Compare(const char *key1, const char *key2)
-{
-        return !strcmp(key1, key2);
 }
 
 #endif

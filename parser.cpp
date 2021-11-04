@@ -475,6 +475,40 @@ RPNElem *Parser::NewFunction() const
                 return new RPNFunRand;
         if (IsLex("?abs"))
                 return new RPNFunAbs;
+        if (IsLex("?pow"))
+                return new RPNFunPow;
+        if (IsLex("?sqrt"))
+                return new RPNFunSqrt;
+        if (IsLex("?sin"))
+                return new RPNFunSin;
+        if (IsLex("?cos"))
+                return new RPNFunCos;
+        if (IsLex("?tan"))
+                return new RPNFunTan;
+        if (IsLex("?asin"))
+                return new RPNFunAsin;
+        if (IsLex("?acos"))
+                return new RPNFunAcos;
+        if (IsLex("?atan"))
+                return new RPNFunAtan;
+        if (IsLex("?atan2"))
+                return new RPNFunAtan2;
+        if (IsLex("?exp"))
+                return new RPNFunExp;
+        if (IsLex("?log"))
+                return new RPNFunLog;
+        if (IsLex("?ceil"))
+                return new RPNFunCeil;
+        if (IsLex("?floor"))
+                return new RPNFunFloor;
+        if (IsLex("?trunc"))
+                return new RPNFunTrunc;
+        if (IsLex("?round"))
+                return new RPNFunRound;
+        if (IsLex("?max"))
+                return new RPNFunMax;
+        if (IsLex("?min"))
+                return new RPNFunMin;
         throw SyntaxError("unknown function", cur_lex);
 }
 

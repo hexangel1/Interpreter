@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstdlib>
+#include <cmath>
 #include "engine.hpp"
 #include "error.hpp"
 
@@ -719,5 +720,212 @@ RPNElem *RPNFunAbs::Call(RPNItem **stack, LabTable& L, VarTable& V) const
                 retval = new RPNDouble(d1->Get() >= 0 ? d1->Get() : -d1->Get());
         delete operand1;
         return retval;
+}
+
+RPNElem *RPNFunPow::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNInt *i1 = dynamic_cast<RPNInt*>(operand1);
+        if (!i1)
+                throw RuntimeError("operand1 not RPNInt", "RPNFunPow");
+        RPNElem *operand2 = Pop(stack);
+        RPNDouble *d2 = dynamic_cast<RPNDouble*>(operand2);
+        if (!d2)
+                throw RuntimeError("operand2 not RPNDouble", "RPNFunPow");
+        double res = pow(d2->Get(), i1->Get());
+        delete operand1;
+        delete operand2;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunSqrt::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunSqrt");
+        double res = sqrt(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunSin::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunSin");
+        double res = sin(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunCos::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunCos");
+        double res = cos(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunTan::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunTan");
+        double res = tan(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunAsin::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunAsin");
+        double res = asin(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunAcos::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunAcos");
+        double res = acos(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunAtan::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunAtan");
+        double res = atan(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunAtan2::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunAtan2");
+        RPNElem *operand2 = Pop(stack);
+        RPNDouble *d2 = dynamic_cast<RPNDouble*>(operand2);
+        if (!d2)
+                throw RuntimeError("operand2 not RPNDouble", "RPNFunAtan2");
+        double res = atan2(d2->Get(), d1->Get());
+        delete operand1;
+        delete operand2;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunExp::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunExp");
+        double res = exp(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunLog::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunLog");
+        double res = log(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunCeil::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunCeil");
+        double res = ceil(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunFloor::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunFloor");
+        double res = floor(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunTrunc::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunTrunc");
+        double res = trunc(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunRound::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunRound");
+        double res = round(d1->Get());
+        delete operand1;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunMax::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunMax");
+        RPNElem *operand2 = Pop(stack);
+        RPNDouble *d2 = dynamic_cast<RPNDouble*>(operand2);
+        if (!d1)
+                throw RuntimeError("operand2 not RPNDouble", "RPNFunMax");
+        double res = d2->Get() > d1->Get() ? d2->Get() : d1->Get();
+        delete operand1;
+        delete operand2;
+        return new RPNDouble(res);
+}
+
+RPNElem *RPNFunMin::Call(RPNItem **stack, LabTable& L, VarTable& V) const
+{
+        RPNElem *operand1 = Pop(stack);
+        RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
+        if (!d1)
+                throw RuntimeError("operand1 not RPNDouble", "RPNFunMin");
+        RPNElem *operand2 = Pop(stack);
+        RPNDouble *d2 = dynamic_cast<RPNDouble*>(operand2);
+        if (!d1)
+                throw RuntimeError("operand2 not RPNDouble", "RPNFunMin");
+        double res = d2->Get() < d1->Get() ? d2->Get() : d1->Get();
+        delete operand1;
+        delete operand2;
+        return new RPNDouble(res);
 }
 

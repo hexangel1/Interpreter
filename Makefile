@@ -5,6 +5,7 @@ HEADERS = $(filter-out main.hpp, $(SOURCES:.cpp=.hpp)) hashtable.hpp
 OBJECTS = $(SOURCES:.cpp=.o)
 CXX = g++
 CXXFLAGS = -Wall -g -std=c++98 -D DEBUG=0
+LDLIBS = -lm
 CTAGS = /usr/bin/ctags
 INSTALL = install
 PREFIX = /usr/local

@@ -351,5 +351,124 @@ public:
         virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
 };
 
+class RPNFunPow : public RPNFunction {
+public:
+        RPNFunPow() {}
+        virtual ~RPNFunPow() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunSqrt : public RPNFunction {
+public:
+        RPNFunSqrt() {}
+        virtual ~RPNFunSqrt() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunSin : public RPNFunction {
+public:
+        RPNFunSin() {}
+        virtual ~RPNFunSin() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunCos : public RPNFunction {
+public:
+        RPNFunCos() {}
+        virtual ~RPNFunCos() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunTan : public RPNFunction {
+public:
+        RPNFunTan() {}
+        virtual ~RPNFunTan() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunAsin : public RPNFunction {
+public:
+        RPNFunAsin() {}
+        virtual ~RPNFunAsin() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunAcos : public RPNFunction {
+public:
+        RPNFunAcos() {}
+        virtual ~RPNFunAcos() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunAtan : public RPNFunction {
+public:
+        RPNFunAtan() {}
+        virtual ~RPNFunAtan() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunAtan2 : public RPNFunction {
+public:
+        RPNFunAtan2() {}
+        virtual ~RPNFunAtan2() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunExp : public RPNFunction {
+public:
+        RPNFunExp() {}
+        virtual ~RPNFunExp() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunLog : public RPNFunction {
+public:
+        RPNFunLog() {}
+        virtual ~RPNFunLog() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunCeil : public RPNFunction {
+public:
+        RPNFunCeil() {}
+        virtual ~RPNFunCeil() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunFloor : public RPNFunction {
+public:
+        RPNFunFloor() {}
+        virtual ~RPNFunFloor() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunTrunc : public RPNFunction {
+public:
+        RPNFunTrunc() {}
+        virtual ~RPNFunTrunc() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunRound : public RPNFunction {
+public:
+        RPNFunRound() {}
+        virtual ~RPNFunRound() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunMax : public RPNFunction {
+public:
+        RPNFunMax() {}
+        virtual ~RPNFunMax() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
+class RPNFunMin : public RPNFunction {
+public:
+        RPNFunMin() {}
+        virtual ~RPNFunMin() {}
+        virtual RPNElem *Call(RPNItem **stack, LabTable& L, VarTable& V) const;
+};
+
 #endif
 
