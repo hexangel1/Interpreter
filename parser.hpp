@@ -39,7 +39,6 @@ private:
         void C8();
         void D();
         void E();
-        void F();
         void Add(RPNElem *unit);
         void Push(RPNElem *unit);
         RPNElem *Pop();

@@ -110,7 +110,7 @@ void Parser::B()
 void Parser::B1()
 {
         RPNItem *tmp = Blank();
-        E();
+        C1();
         Add(new RPNJumpFalse);
         A();
         if (IsLex("else")) {
@@ -133,7 +133,7 @@ void Parser::B2()
         Add(new RPNFunNull);
         RPNItem *tmp2 = last;
         RPNItem *tmp = Blank();
-        E();
+        C1();
         Add(new RPNJumpFalse);
         A();
         Add(new RPNLabel(tmp2));
@@ -151,7 +151,7 @@ void Parser::B3()
         if (!IsLex("until"))
                 throw SyntaxError("expected keyword 'until'", cur_lex);
         Next();
-        E();
+        C1();
         Add(new RPNJumpFalse);
 }
 
@@ -256,7 +256,7 @@ void Parser::B10()
 void Parser::C1()
 {
         C2();
-        while (IsLex("~")) {
+        while (IsLex("~") || IsLex("equ")) {
                 Push(new RPNFunEQ);
                 Next();
                 C2();
@@ -267,8 +267,11 @@ void Parser::C1()
 void Parser::C2()
 {
         C3();
-        while (IsLex("|") || IsLex("^")) {
-                IsLex("|") ? Push(new RPNFunOR) : Push(new RPNFunXOR);
+        while (IsLex("|") || IsLex("^") || IsLex("or") || IsLex("xor")) {
+                if (IsLex("|") || IsLex("or"))
+                        Push(new RPNFunOR);
+                else
+                        Push(new RPNFunXOR);
                 Next();
                 C3();
                 Add(Pop());
@@ -278,7 +281,7 @@ void Parser::C2()
 void Parser::C3()
 {
         C4();
-        while (IsLex("&")) {
+        while (IsLex("&") || IsLex("and")) {
                 Push(new RPNFunAND);
                 Next();
                 C4();
@@ -358,7 +361,7 @@ void Parser::C8()
         } else if (IsFunction() || IsCast()) {
                 Push(NewFunction());
                 Next();
-                F();
+                E();
                 Add(Pop());
         } else if (IsString()) {
                 Add(new RPNString(cur_lex->token));
@@ -398,17 +401,6 @@ void Parser::D()
 }
 
 void Parser::E()
-{
-        if (!IsLex("("))
-                throw SyntaxError("expected '(' before condition", cur_lex);
-        Next();
-        C1();
-        if (!IsLex(")"))
-                throw SyntaxError("expected ')' after condition", cur_lex);
-        Next();
-}
-
-void Parser::F()
 {
         if (!IsLex("("))
                 throw SyntaxError("expected '(' before arguments", cur_lex);

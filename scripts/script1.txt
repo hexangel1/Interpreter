@@ -11,21 +11,23 @@ begin
         $i = 0;
         repeat
         {
-                if ($i == $size) {
+                if $i == $size
+                {
                         $size = $size * 2;
                         alloc $b $size;
                 }
                 print ">> " ;
                 scan $b[$i];
-                if ($b[$i] == "exit") {
+                if $b[$i] == "exit"
+                {
                         goto @exit;
                 }
                 inc $i;
         }
-        until ($b[$i - 1] == "print")
+        until $b[$i - 1] == "print" or $i > 5
         print "Strings you have typed:", endl;
         $j = 0;
-        while ($j < $i)
+        while $j < $i
         {
                 print $b[$j], endl;
                 inc $j;
@@ -33,7 +35,7 @@ begin
         free $b;
         goto @again;
 @exit:
-        print "Goodbye, " + "dear " + $name, endl;
+        print "Goodbye, dear " + $name, endl;
 }
 end
 
