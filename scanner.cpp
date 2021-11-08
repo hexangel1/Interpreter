@@ -10,7 +10,7 @@ const char *const Scanner::keywords[] = {
         "inc",   "dec",   "true",   "false",
         "bool",  "int",   "double", "string"
 };
- 
+
 Scanner::Scanner()
 {
         flag = home;
@@ -48,7 +48,7 @@ void Scanner::Feed(char c)
                 current_line++;
 }
 
-void Scanner::PrintError() const
+void Scanner::Report() const
 {
         if (flag == home)
                 return;
@@ -132,7 +132,7 @@ void Scanner::HandleIdent(char c)
                 flag = home;
                 delay = true;
                 separate = true;
-                AddLexeme(identifier); 
+                AddLexeme(identifier);
         }
 }
 
@@ -211,15 +211,15 @@ void Scanner::HandleComnt(char c)
 
 void Scanner::ControlDelimiter(char c)
 {
-        if (separate) {
-                separate = false;
-                if (c == '>' || c == '<' || c == '!' || c == '=' ||
-                    IsDelimiter(c) || IsPunctuator(c) || IsOperation(c))
-                        return;
-                flag = error;
-                Append(c);
-                AddLexeme(bad_token);
-        }
+        if (!separate)
+                return;
+        separate = false;
+        if (c == '>' || c == '<' || c == '!' || c == '=' ||
+            IsOperation(c) || IsPunctuator(c) || IsDelimiter(c))
+                return;
+        flag = error;
+        Append(c);
+        AddLexeme(bad_token);
 }
 
 void Scanner::Append(char c)
@@ -227,7 +227,7 @@ void Scanner::Append(char c)
         if (buf_used == allocated)
                 AllocateBuffer();
         buffer[buf_used] = c;
-        buf_used++;        
+        buf_used++;
         buffer[buf_used] = 0;
 }
 

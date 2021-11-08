@@ -44,10 +44,10 @@ public:
         Scanner();
         ~Scanner();
         void Feed(char c);
-        void PrintError() const;
-        bool IsSuccess() const { return flag == home; }
+        void Report() const;
+        bool Success() const { return flag == home; }
+        LexItem *LastToken() const { return last_ptr; }
         LexItem *GetTokenList() const { return token_list; }
-        unsigned int ErrLine() const { return last_ptr->line; }
 private:
         void Step(char c);
         void HandleHome(char c);

@@ -41,7 +41,7 @@ public:
         virtual ~RPNConst() {}
         virtual void Evaluate(RPNItem **cur_cmd, RPNItem **stack,
                               LabTable& L, VarTable& V) const;
-        virtual RPNElem *Clone() const = 0; 
+        virtual RPNElem *Clone() const = 0;
 };
 
 class RPNAddr : public RPNConst {
@@ -97,7 +97,7 @@ class RPNString : public RPNConst {
 public:
         RPNString(const char *val, bool own = true, bool copy = true)
                 { value = copy ? dupstr(val) : val; own_string = own; }
-        virtual ~RPNString() 
+        virtual ~RPNString()
                 { if (own_string) delete[] value; }
         virtual RPNElem *Clone() const
                 { return new RPNString(value, false, false); }

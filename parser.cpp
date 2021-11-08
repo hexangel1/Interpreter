@@ -213,7 +213,7 @@ again:
         }
         Add(new RPNFunPrint);
         if (!IsLex(";"))
-                throw SyntaxError("expected ';'", cur_lex); 
+                throw SyntaxError("expected ';'", cur_lex);
         Next();
 }
 
@@ -225,7 +225,7 @@ void Parser::B8()
         Next();
         D();
         if (!IsLex(";"))
-                throw SyntaxError("expected ';'", cur_lex); 
+                throw SyntaxError("expected ';'", cur_lex);
         Next();
 }
 
@@ -549,7 +549,7 @@ bool Parser::IsBool() const
 
 bool Parser::IsCast() const
 {
-        return IsLex("bool") || IsLex("int") || IsLex("double") || 
+        return IsLex("bool") || IsLex("int") || IsLex("double") ||
                IsLex("string");
 }
 

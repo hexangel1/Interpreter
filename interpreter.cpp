@@ -9,7 +9,7 @@
 #include "engine.hpp"
 #include "error.hpp"
 
-void Interpreter::WriteLine(const char *script, unsigned int line)
+void Interpreter::ErrorLine(const char *script, unsigned int line)
 {
         FILE *fp = fopen(script, "r");
         if (!fp) {
@@ -43,9 +43,10 @@ RPNItem *Interpreter::BuildProgram(const char *script, LabTable *L)
         while ((c = fgetc(fp)) != EOF)
                 B.Feed(c);
         fclose(fp);
-        if (!B.IsSuccess()) {
-                B.PrintError();
-                WriteLine(script, B.ErrLine());
+        if (!B.Success()) {
+                B.Report();
+                if (B.LastToken())
+                        ErrorLine(script, B.LastToken()->line);
                 return 0;
         }
         LexItem *token = B.GetTokenList();
@@ -55,7 +56,8 @@ RPNItem *Interpreter::BuildProgram(const char *script, LabTable *L)
         }
         catch (const SyntaxError& err) {
                 err.Report();
-                WriteLine(script, err.Get()->line);
+                if (err.Token())
+                        ErrorLine(script, err.Token()->line);
                 fputs("Exception: parsing error\n", stderr);
         }
         return prog;

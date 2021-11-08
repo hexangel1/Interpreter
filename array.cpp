@@ -38,7 +38,7 @@ void Variable::Set(RPNConst *val)
 {
         if (type == string_type)
                 delete[] value.string;
-        RPNBool *b = dynamic_cast<RPNBool*>(val); 
+        RPNBool *b = dynamic_cast<RPNBool*>(val);
         RPNInt *i = dynamic_cast<RPNInt*>(val);
         RPNDouble *d = dynamic_cast<RPNDouble*>(val);
         RPNString *s = dynamic_cast<RPNString*>(val);

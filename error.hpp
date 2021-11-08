@@ -3,33 +3,32 @@
 
 #include "common.hpp"
 
-class LexItem;
-
 class Error {
+        const char *object;
         const char *message;
 public:
-        Error(const char *msg) { message = dupstr(msg); }
-        Error(const Error& err) { message = dupstr(err.message); }
-        ~Error() { delete[] message; }
+        Error(const char *obj, const char *msg)
+                { object = dupstr(obj); message = dupstr(msg); }
+        Error(const Error& err)
+                { object = dupstr(err.object); message = dupstr(err.message); }
+        ~Error() { delete[] object; delete[] message; }
         void Report() const;
 };
 
 class SyntaxError : public Error {
-        LexItem *lex;
+        class LexItem *lex;
 public:
-        SyntaxError(const char *msg, LexItem *q ) : Error(msg), lex(q) {}
+        SyntaxError(const char *msg, LexItem *ptr) : Error("error", msg)
+                { lex = ptr; }
         ~SyntaxError() {}
         void Report() const;
-        LexItem *Get() const { return lex; }
+        LexItem *Token() const { return lex; }
 };
 
 class RuntimeError : public Error {
-        const char *func;
 public:
-        RuntimeError(const char *msg, const char *f) : Error(msg)
-                { func = dupstr(f); }
-        ~RuntimeError() { delete[] func; }
-        void Report() const;
+        RuntimeError(const char *obj, const char *msg) : Error(obj, msg) {}
+        ~RuntimeError() {}
 };
 
 #endif

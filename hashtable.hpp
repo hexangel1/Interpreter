@@ -8,34 +8,34 @@
 template <class T>
 class HashTable {
         struct Node {
-                T value;
-                bool state;
+                T data;
                 const char *key;
-                Node(const T& val, const char *s)
-                        : value(val), state(true) { key = dupstr(s); }
+                bool is_deleted;
+                Node(const T& val, const char *str)
+                        : data(val), key(dupstr(str)), is_deleted(false) {}
                 ~Node() { delete[] key; }
         };
         Node **array;
-        int buffer_size;
-        int buffer_used;
+        int array_size;
+        int array_used;
         int not_deleted;
-        static const int default_size;
+        static const int initial_size;
         static const double rehash_size;
 public:
         HashTable();
         ~HashTable();
-        bool Add(const T& value, const char *key);
+        bool Add(const T& data, const char *key);
         bool Remove(const char *key);
         bool Find(const char *key) const;
         T& operator[](const char *key) const;
 private:
         void Resize();
         void Rehash();
-        static int Hash(const char *key, int size, int size2);
+        static int Hash(const char *key, int size, int k);
 };
 
 template <class T>
-const int HashTable<T>::default_size = 8;
+const int HashTable<T>::initial_size = 8;
 
 template <class T>
 const double HashTable<T>::rehash_size = 0.75;
@@ -43,18 +43,18 @@ const double HashTable<T>::rehash_size = 0.75;
 template <class T>
 HashTable<T>::HashTable()
 {
-        buffer_size = default_size;
-        buffer_used = 0;
+        array_size = initial_size;
+        array_used = 0;
         not_deleted = 0;
-        array = new Node*[buffer_size];
-        for (int i = 0; i < buffer_size; i++)
+        array = new Node*[initial_size];
+        for (int i = 0; i < array_size; i++)
                 array[i] = 0;
 }
 
 template <class T>
 HashTable<T>::~HashTable()
 {
-        for (int i = 0; i < buffer_size; i++) {
+        for (int i = 0; i < array_size; i++) {
                 if (array[i])
                         delete array[i];
         }
@@ -62,30 +62,28 @@ HashTable<T>::~HashTable()
 }
 
 template <class T>
-bool HashTable<T>::Add(const T& value, const char *key)
+bool HashTable<T>::Add(const T& data, const char *key)
 {
-        if (not_deleted + 1 > int(rehash_size * buffer_size))
+        if (not_deleted + 1 > int(rehash_size * array_size))
                 Resize();
-        else if (buffer_used > 2 * not_deleted)
+        else if (array_used > 2 * not_deleted)
                 Rehash();
-        int h1 = Hash(key, buffer_size, buffer_size - 1);
-        int h2 = Hash(key, buffer_size, buffer_size + 1);
-        int i = 0;
+        int h1 = Hash(key, array_size, array_size - 1);
+        int h2 = Hash(key, array_size, array_size + 1);
         int first_deleted = -1;
-        while (array[h1] && i < buffer_size) {
-                if (!strcmp(array[h1]->key, key) && array[h1]->state)
+        for (int i = 0; i < array_size && array[h1]; i++) {
+                if (!strcmp(array[h1]->key, key) && !array[h1]->is_deleted)
                         return false;
-                if (!array[h1]->state && first_deleted == -1)
+                if (array[h1]->is_deleted && first_deleted == -1)
                         first_deleted = h1;
-                h1 = (h1 + h2) % buffer_size;
-                i++;
+                h1 = (h1 + h2) % array_size;
         }
         if (first_deleted == -1) {
-                array[h1] = new Node(value, key);
-                buffer_used++;
+                array[h1] = new Node(data, key);
+                array_used++;
         } else {
                 delete array[first_deleted];
-                array[first_deleted] = new Node(value, key);
+                array[first_deleted] = new Node(data, key);
         }
         not_deleted++;
         return true;
@@ -94,17 +92,17 @@ bool HashTable<T>::Add(const T& value, const char *key)
 template <class T>
 bool HashTable<T>::Remove(const char *key)
 {
-        int h1 = Hash(key, buffer_size, buffer_size - 1);
-        int h2 = Hash(key, buffer_size, buffer_size + 1);
-        int i = 0;
-        while (array[h1] && i < buffer_size) {
-                if (!strcmp(array[h1]->key, key) && array[h1]->state) {
-                        array[h1]->state = false;
+        int h1 = Hash(key, array_size, array_size - 1);
+        int h2 = Hash(key, array_size, array_size + 1);
+        for (int i = 0; i < array_size && array[h1]; i++) {
+                if (!strcmp(array[h1]->key, key)) {
+                        if (array[h1]->is_deleted)
+                                return false;
+                        array[h1]->is_deleted = true;
                         not_deleted--;
                         return true;
                 }
-                h1 = (h1 + h2) % buffer_size;
-                i++;
+                h1 = (h1 + h2) % array_size;
         }
         return false;
 }
@@ -112,14 +110,12 @@ bool HashTable<T>::Remove(const char *key)
 template <class T>
 bool HashTable<T>::Find(const char *key) const
 {
-        int h1 = Hash(key, buffer_size, buffer_size - 1);
-        int h2 = Hash(key, buffer_size, buffer_size + 1);
-        int i = 0;
-        while (array[h1] && i < buffer_size) {
-                if (!strcmp(array[h1]->key, key) && array[h1]->state)
+        int h1 = Hash(key, array_size, array_size - 1);
+        int h2 = Hash(key, array_size, array_size + 1);
+        for (int i = 0; i < array_size && array[h1]; i++) {
+                if (!strcmp(array[h1]->key, key) && !array[h1]->is_deleted)
                         return true;
-                h1 = (h1 + h2) % buffer_size;
-                i++;
+                h1 = (h1 + h2) % array_size;
         }
         return false;
 }
@@ -127,14 +123,12 @@ bool HashTable<T>::Find(const char *key) const
 template <class T>
 T& HashTable<T>::operator[](const char *key) const
 {
-        int h1 = Hash(key, buffer_size, buffer_size - 1);
-        int h2 = Hash(key, buffer_size, buffer_size + 1);
-        int i = 0;
-        while (array[h1] && i < buffer_size) {
-                if (!strcmp(array[h1]->key, key) && array[h1]->state)
-                        return array[h1]->value;
-                h1 = (h1 + h2) % buffer_size;
-                i++;
+        int h1 = Hash(key, array_size, array_size - 1);
+        int h2 = Hash(key, array_size, array_size + 1);
+        for (int i = 0; i < array_size && array[h1]; i++) {
+                if (!strcmp(array[h1]->key, key) && !array[h1]->is_deleted)
+                        return array[h1]->data;
+                h1 = (h1 + h2) % array_size;
         }
         throw RuntimeError("not found in table", key);
 }
@@ -142,21 +136,21 @@ T& HashTable<T>::operator[](const char *key) const
 template <class T>
 void HashTable<T>::Resize()
 {
-        int old_buffer_size = buffer_size;
-        buffer_size <<= 1;
-        buffer_used = 0;
+        int old_array_size = array_size;
+        array_size <<= 1;
+        array_used = 0;
         not_deleted = 0;
-        Node **array2 = new Node*[buffer_size];
-        for (int i = 0; i < buffer_size; ++i)
+        Node **array2 = new Node*[array_size];
+        for (int i = 0; i < array_size; ++i)
                 array2[i] = 0;
         Node **tmp = array;
         array = array2;
         array2 = tmp;
-        for (int i = 0; i < old_buffer_size; i++) {
-                if (array2[i] && array2[i]->state)
-                        Add(array2[i]->value, array2[i]->key);
+        for (int i = 0; i < old_array_size; i++) {
+                if (array2[i] && !array2[i]->is_deleted)
+                        Add(array2[i]->data, array2[i]->key);
         }
-        for (int i = 0; i < old_buffer_size; i++) {
+        for (int i = 0; i < old_array_size; i++) {
                 if (array2[i])
                         delete array2[i];
         }
@@ -166,19 +160,19 @@ void HashTable<T>::Resize()
 template <class T>
 void HashTable<T>::Rehash()
 {
-        buffer_used = 0;
+        array_used = 0;
         not_deleted = 0;
-        Node **array2 = new Node*[buffer_size];
-        for (int i = 0; i < buffer_size; ++i)
+        Node **array2 = new Node*[array_size];
+        for (int i = 0; i < array_size; ++i)
                 array2[i] = 0;
         Node **tmp = array;
         array = array2;
         array2 = tmp;
-        for (int i = 0; i < buffer_size; i++) {
-                if (array2[i] && array2[i]->state)
-                        Add(array2[i]->value, array2[i]->key);
+        for (int i = 0; i < array_size; i++) {
+                if (array2[i] && !array2[i]->is_deleted)
+                        Add(array2[i]->data, array2[i]->key);
         }
-        for (int i = 0; i < buffer_size; i++) {
+        for (int i = 0; i < array_size; i++) {
                 if (array2[i])
                         delete array2[i];
         }
@@ -187,13 +181,13 @@ void HashTable<T>::Rehash()
 }
 
 template <class T>
-int HashTable<T>::Hash(const char *key, int size, int size2)
+int HashTable<T>::Hash(const char *key, int size, int k)
 {
         int hash = 0;
         for (int i = 0; key[i]; i++)
-                hash = (size2 * hash + key[i]) % size;
-        return (hash * 2 + 1) % size;
-
+                hash = (hash * k + key[i]) % size;
+        hash = (hash * 2 + 1) % size;
+        return hash;
 }
 
 #endif

@@ -4,14 +4,14 @@
 class RPNItem;
 class LabTable;
 
-class Interpreter { 
+class Interpreter {
 public:
         Interpreter() {}
-        void RunScript(const char *sctipt);
+        void RunScript(const char *script);
 private:
         RPNItem *BuildProgram(const char *script, LabTable *L);
         void DeleteProgram(RPNItem *prog);
-        static void WriteLine(const char *script, unsigned int line);
+        static void ErrorLine(const char *script, unsigned int line);
 };
 
 #endif

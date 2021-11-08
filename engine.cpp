@@ -14,17 +14,16 @@ void RPNElem::Push(RPNItem **stack, RPNElem *unit)
 
 RPNElem *RPNElem::Pop(RPNItem **stack)
 {
-        if (*stack) {
-                RPNElem *unit = (*stack)->elem;
-                RPNItem *tmp = *stack;
-                *stack = (*stack)->next;
-                delete tmp;
-                return unit;
-        }
-        return 0;
+        if (!*stack)
+                return 0;
+        RPNElem *unit = (*stack)->elem;
+        RPNItem *tmp = *stack;
+        *stack = (*stack)->next;
+        delete tmp;
+        return unit;
 }
 
-void RPNJump::Evaluate(RPNItem **cur_cmd, RPNItem **stack, 
+void RPNJump::Evaluate(RPNItem **cur_cmd, RPNItem **stack,
                        LabTable& L, VarTable& V) const
 {
         RPNElem *operand1 = Pop(stack);
@@ -84,7 +83,7 @@ RPNElem *RPNFunAlloc::Call(RPNItem **stack, LabTable& L, VarTable& V) const
                 throw RuntimeError("operand2 not RPNString", "RPNFunAlloc");
         V.Alloc(name->Get(), size->Get());
         delete operand1;
-        delete operand2; 
+        delete operand2;
         return 0;
 }
 
@@ -493,7 +492,7 @@ RPNElem *RPNFunLSS::Call(RPNItem **stack, LabTable& L, VarTable& V) const
         RPNElem *operand1 = Pop(stack);
         RPNInt *i1 = dynamic_cast<RPNInt*>(operand1);
         RPNDouble *d1 = dynamic_cast<RPNDouble*>(operand1);
-        RPNString *s1 = dynamic_cast<RPNString*>(operand1); 
+        RPNString *s1 = dynamic_cast<RPNString*>(operand1);
         if (!i1 && !d1 && !s1)
                 throw RuntimeError("operand1", "RPNFunLSS");
         RPNElem *operand2 = Pop(stack);
