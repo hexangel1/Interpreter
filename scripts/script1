@@ -1,9 +1,11 @@
+#!/usr/local/bin/interpreter
 program "while";
 
 begin
 {
         print "Enter your name >> ";
         scan $name;
+        print ?sin(3.14/2.0), endl;
 @again:
         $size = 2;
         alloc $b $size;
@@ -24,7 +26,7 @@ begin
                 }
                 inc $i;
         }
-        until $b[$i - 1] == "print" or $i > 5
+        until $b[$i - 1] == "print" or not ($i <= 5)
         print "Strings you have typed:", endl;
         $j = 0;
         while $j < $i

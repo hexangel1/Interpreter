@@ -23,10 +23,11 @@ tags: $(SOURCES) $(HEADERS)
 	$(CTAGS) $(SOURCES) $(HEADERS)
 
 run: $(PROJECT)
-	./$(PROJECT) scripts/script3.txt
+	./$(PROJECT) scripts/script1
 
 tar:
-	tar -cf $(PROJECT).tar $(SOURCES) $(HEADERS) Makefile README.txt scripts
+	tar -cf $(PROJECT).tar $(SOURCES) $(HEADERS) \
+        Makefile README.txt scripts
 
 clean:
 	rm -f $(PROJECT) *.o deps.mk tags

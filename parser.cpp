@@ -316,7 +316,10 @@ void Parser::C5()
 {
         C6();
         while (IsLex("+") || IsLex("-")) {
-                IsLex("+") ? Push(new RPNFunPlus) : Push(new RPNFunMinus);
+                if (IsLex("+"))
+                        Push(new RPNFunPlus);
+                else
+                        Push(new RPNFunMinus);
                 Next();
                 C6();
                 Add(Pop());
@@ -341,8 +344,11 @@ void Parser::C6()
 
 void Parser::C7()
 {
-        if (IsLex("!") || IsLex("-")) {
-                IsLex("!") ? Push(new RPNFunNOT) : Push(new RPNFunUMinus);
+        if (IsLex("-") || IsLex("!") || IsLex("not")) {
+                if (IsLex("-"))
+                        Push(new RPNFunUMinus);
+                else
+                        Push(new RPNFunNOT);
                 Next();
                 C8();
                 Add(Pop());
