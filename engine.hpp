@@ -49,8 +49,8 @@ class RPNAddr : public RPNConst {
         const char *name;
         long index;
 public:
-        RPNAddr(const char *str, long num) { name = str; index = num; }
-        virtual ~RPNAddr() {}
+        RPNAddr(const char *str, long num = 0) { name = dupstr(str); index = num; }
+        virtual ~RPNAddr() { delete []name; }
         virtual RPNElem *Clone() const { return new RPNAddr(name, index); }
         const char *Name() const { return name; }
         long Index() const { return index; }
@@ -106,7 +106,7 @@ public:
         const char *GetString() const {
                 if (type != string_type)
                         throw RuntimeError("RPNValue", "data type mismatch");
-                return dupstr(value.string);
+                return value.string;
         }
 };
 

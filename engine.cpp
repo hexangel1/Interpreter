@@ -78,10 +78,10 @@ RPNElem *RPNFunAlloc::Call(RPNItem **stack, LabTable& L, VarTable& V) const
         if (!size)
                 throw RuntimeError("operand1 not RPNValue", "RPNFunAlloc");
         RPNElem *operand2 = Pop(stack);
-        RPNValue *name = dynamic_cast<RPNValue*>(operand2);
-        if (!name)
-                throw RuntimeError("operand2 not RPNValue", "RPNFunAlloc");
-        V.Alloc(name->GetString(), size->GetInt());
+        RPNAddr *addr = dynamic_cast<RPNAddr*>(operand2);
+        if (!addr)
+                throw RuntimeError("operand2 not RPNAddr", "RPNFunAlloc");
+        V.Alloc(addr->Name(), size->GetInt());
         delete operand1;
         delete operand2;
         return 0;
@@ -90,10 +90,10 @@ RPNElem *RPNFunAlloc::Call(RPNItem **stack, LabTable& L, VarTable& V) const
 RPNElem *RPNFunFree::Call(RPNItem **stack, LabTable& L, VarTable& V) const
 {
         RPNElem *operand1 = Pop(stack);
-        RPNValue *name = dynamic_cast<RPNValue*>(operand1);
-        if (!name)
-                throw RuntimeError("operand1 not RPNValue", "RPNFunFree");
-        V.Free(name->GetString());
+        RPNAddr *addr = dynamic_cast<RPNAddr*>(operand1);
+        if (!addr)
+                throw RuntimeError("operand1 not RPNAddr", "RPNFunFree");
+        V.Free(addr->Name());
         delete operand1;
         return 0;
 }
@@ -130,6 +130,7 @@ RPNElem *RPNFunInc::Call(RPNItem **stack, LabTable& L, VarTable& V) const
         RPNValue *q = new RPNValue(value->GetInt() + 1);
         V.SetValue(addr->Name(), addr->Index(), q);
         delete operand1;
+        delete value;
         delete q;
         return 0;
 }
@@ -144,6 +145,7 @@ RPNElem *RPNFunDec::Call(RPNItem **stack, LabTable& L, VarTable& V) const
         RPNValue *q = new RPNValue(value->GetInt() - 1);
         V.SetValue(addr->Name(), addr->Index(), q);
         delete operand1;
+        delete value;
         delete q;
         return 0;
 }
@@ -171,10 +173,10 @@ RPNElem *RPNFunIndex::Call(RPNItem **stack, LabTable& L, VarTable& V) const
         if (!index)
                 throw RuntimeError("operand1 not RPNValue", "RPNFunIndex");
         RPNElem *operand2 = Pop(stack);
-        RPNValue *name = dynamic_cast<RPNValue*>(operand2);
-        if (!name)
+        RPNAddr *addr = dynamic_cast<RPNAddr*>(operand2);
+        if (!addr)
                 throw RuntimeError("operand2 not RPNValue", "RPNFunIndex");
-        RPNElem *retval = new RPNAddr(name->GetString(), index->GetInt());
+        RPNElem *retval = new RPNAddr(addr->Name(), index->GetInt());
         delete operand1;
         delete operand2;
         return retval;
@@ -191,6 +193,7 @@ RPNElem *RPNFunPlus::Call(RPNItem **stack, LabTable& L, VarTable& V) const
         if (!i2)
                 throw RuntimeError("operand2 not RPNValue", "RPNFunPlus");
         RPNElem *retval;
+        const char *str;
         if (i1->Type() != i2->Type())
                 throw RuntimeError("data type mismatch", "RPNFunPlus");
         switch (i1->Type()) {
@@ -201,8 +204,9 @@ RPNElem *RPNFunPlus::Call(RPNItem **stack, LabTable& L, VarTable& V) const
                 retval = new RPNValue(i2->GetDouble() + i1->GetDouble());
                 break;
         case string_type:
-                retval = new RPNValue(concatenate(i2->GetString(), 
-                                                  i1->GetString()));
+                str = concatenate(i2->GetString(), i1->GetString());
+                retval = new RPNValue(str);
+                delete []str;
                 break;
         default:
                 throw RuntimeError("data type mismatch", "RPNFunPlus");
@@ -613,17 +617,22 @@ RPNElem *RPNFunLEQ::Call(RPNItem **stack, LabTable& L, VarTable& V) const
 RPNElem *RPNFunPrint::Call(RPNItem **stack, LabTable& L, VarTable& V) const
 {
         RPNElem *operand;
-        RPNValue *argv[16];
-        int i;
-        for (i = 0; (operand = Pop(stack)); i++) {
-                argv[i] = dynamic_cast<RPNValue*>(operand);
-                if (argv[i])
-                        continue;
-                throw RuntimeError("operand not RPNValue", "RPNFunPrint");
+        RPNItem *tmp, *arg_list = 0;
+        while ((operand = Pop(stack))) {
+                tmp = new RPNItem;
+                tmp->elem = operand;
+                tmp->next = arg_list;
+                arg_list = tmp;
         }
-        for (i--; i >= 0; i--) {
-                printf("%s", argv[i]->GetString());
-                delete argv[i];
+        while (arg_list) {
+                tmp = arg_list;
+                arg_list = arg_list->next;
+                RPNValue *val = dynamic_cast<RPNValue*>(tmp->elem);
+                if (!val)
+                        throw RuntimeError("RPNValue", "RPNFunPrint");
+                printf("%s", val->GetString());
+                delete tmp->elem;
+                delete tmp;
         }
         return 0;
 }

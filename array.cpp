@@ -21,7 +21,7 @@ Variable::Variable(const Variable& var)
 Variable::~Variable()
 {
         if (type == string_type)
-                delete[] value.string;
+                delete []value.string;
 }
 
 Variable& Variable::operator=(const Variable& var)

@@ -96,7 +96,7 @@ void Parser::B()
                 B8();
                 Add(new RPNFunDec);
         } else if (IsVariable()) {
-                Add(new RPNValue(cur_lex->token));
+                Add(new RPNAddr(cur_lex->token));
                 Next();
                 D();
                 B9();
@@ -171,7 +171,7 @@ void Parser::B4()
 void Parser::B5()
 {
         if (IsVariable()) {
-                Add(new RPNValue(cur_lex->token));
+                Add(new RPNAddr(cur_lex->token));
                 Next();
                 C1();
         } else {
@@ -186,7 +186,7 @@ void Parser::B5()
 void Parser::B6()
 {
         if (IsVariable()) {
-                Add(new RPNValue(cur_lex->token));
+                Add(new RPNAddr(cur_lex->token));
                 Next();
         } else {
                 throw SyntaxError("expected variable", cur_lex);
@@ -221,7 +221,7 @@ void Parser::B8()
 {
         if (!IsVariable())
                 throw SyntaxError("expected variable", cur_lex);
-        Add(new RPNValue(cur_lex->token));
+        Add(new RPNAddr(cur_lex->token));
         Next();
         D();
         if (!IsLex(";"))
@@ -360,7 +360,7 @@ void Parser::C7()
 void Parser::C8()
 {
         if (IsVariable()) {
-                Add(new RPNValue(cur_lex->token));
+                Add(new RPNAddr(cur_lex->token));
                 Next();
                 D();
                 Add(new RPNFunVar);
@@ -400,10 +400,8 @@ void Parser::D()
                 if (!IsLex("]"))
                         throw SyntaxError("expected ']'", cur_lex);
                 Next();
-        } else {
-                Add(new RPNValue(0L));
+                Add(new RPNFunIndex);
         }
-        Add(new RPNFunIndex);
 }
 
 void Parser::E()
