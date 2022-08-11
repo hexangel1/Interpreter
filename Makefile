@@ -4,7 +4,7 @@ SOURCES = main.cpp interpreter.cpp parser.cpp scanner.cpp engine.cpp \
 HEADERS = $(filter-out main.hpp, $(SOURCES:.cpp=.hpp)) hashtable.hpp
 OBJECTS = $(SOURCES:.cpp=.o)
 CXX = g++
-CXXFLAGS = -Wall -g -std=c++98 -D DEBUG=0
+CXXFLAGS = -Wall -g --std=c++98
 LDLIBS = -lm
 CTAGS = /usr/bin/ctags
 INSTALL = install

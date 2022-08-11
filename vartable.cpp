@@ -14,14 +14,14 @@ void VarTable::Free(const char *name)
         table.Remove(name);
 }
 
-void VarTable::SetValue(const char *name, long index, RPNConst *val)
+void VarTable::SetValue(const char *name, long index, RPNValue *val)
 {
         if (!table.Find(name))
                 table.Add(Array(1), name);
         table[name][index].Set(val);
 }
 
-RPNConst *VarTable::GetValue(const char *name, long index) const
+RPNValue *VarTable::GetValue(const char *name, long index) const
 {
         return table[name][index].Get();
 }

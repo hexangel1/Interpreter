@@ -34,43 +34,40 @@ Variable& Variable::operator=(const Variable& var)
         return *this;
 }
 
-void Variable::Set(RPNConst *val)
+void Variable::Set(RPNValue *val)
 {
         if (type == string_type)
-                delete[] value.string;
-        RPNBool *b = dynamic_cast<RPNBool*>(val);
-        RPNInt *i = dynamic_cast<RPNInt*>(val);
-        RPNDouble *d = dynamic_cast<RPNDouble*>(val);
-        RPNString *s = dynamic_cast<RPNString*>(val);
-        if (b) {
+                delete []value.string;
+        switch (val->Type()) {
+        case bool_type:
                 type = bool_type;
-                value.boolean = b->Get();
-        } else if (i) {
+                value.boolean = val->GetBool();
+                break;
+        case int_type:
                 type = int_type;
-                value.integer = i->Get();
-        } else if (d) {
+                value.integer = val->GetInt();
+                break;
+        case double_type:
                 type = double_type;
-                value.real = d->Get();
-        } else if (s) {
+                value.real = val->GetDouble();
+                break;
+        case string_type:
                 type = string_type;
-                value.string = dupstr(s->Get());
-        } else {
-                type = int_type;
-                value.integer = 0;
+                value.string = dupstr(val->GetString());
         }
 }
 
-RPNConst *Variable::Get() const
+RPNValue *Variable::Get() const
 {
         switch (type) {
         case bool_type:
-                return new RPNBool(value.boolean);
+                return new RPNValue(value.boolean);
         case int_type:
-                return new RPNInt(value.integer);
+                return new RPNValue(value.integer);
         case double_type:
-                return new RPNDouble(value.real);
+                return new RPNValue(value.real);
         case string_type:
-                return new RPNString(value.string, false, false);
+                return new RPNValue(value.string);
         }
         return 0;
 }

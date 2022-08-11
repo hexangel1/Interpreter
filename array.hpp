@@ -1,14 +1,16 @@
 #ifndef ARRAY_HPP_SENTRY
 #define ARRAY_HPP_SENTRY
 
+enum DataType {
+        bool_type,
+        int_type,
+        double_type,
+        string_type
+};
+
 class Variable {
         friend class Array;
-        enum {
-                bool_type,
-                int_type,
-                double_type,
-                string_type
-        } type;
+        DataType type;
         union {
                 bool boolean;
                 long integer;
@@ -20,8 +22,8 @@ public:
         Variable(const Variable& var);
         ~Variable();
         Variable& operator=(const Variable& var);
-        void Set(class RPNConst *val);
-        class RPNConst *Get() const;
+        void Set(class RPNValue *val);
+        class RPNValue *Get() const;
 };
 
 class Array {

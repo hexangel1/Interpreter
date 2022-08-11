@@ -4,6 +4,7 @@
 #include "vartable.hpp"
 #include "labtable.hpp"
 #include "common.hpp"
+#include "error.hpp"
 
 struct RPNItem {
         class RPNElem *elem;
@@ -64,44 +65,49 @@ public:
         RPNItem *Get() const { return value; }
 };
 
-class RPNBool : public RPNConst {
-        bool value;
+class RPNValue : public RPNConst {
+        DataType type;
+        union {
+                bool boolean;
+                long integer;
+                double real;
+                char *string;
+        } value;
 public:
-        RPNBool(bool val) { value = val; }
-        virtual ~RPNBool() {}
-        virtual RPNElem *Clone() const { return new RPNBool(value); }
-        bool Get() const { return value; }
-};
-
-class RPNInt : public RPNConst {
-        long value;
-public:
-        RPNInt(long val) { value = val; }
-        virtual ~RPNInt() {}
-        virtual RPNElem *Clone() const { return new RPNInt(value); }
-        long Get() const { return value; }
-};
-
-class RPNDouble : public RPNConst {
-        double value;
-public:
-        RPNDouble(double val) { value = val; }
-        virtual ~RPNDouble() {}
-        virtual RPNElem *Clone() const { return new RPNDouble(value); }
-        double Get() const { return value; }
-};
-
-class RPNString : public RPNConst {
-        const char *value;
-        bool own_string;
-public:
-        RPNString(const char *val, bool own = true, bool copy = true)
-                { value = copy ? dupstr(val) : val; own_string = own; }
-        virtual ~RPNString()
-                { if (own_string) delete[] value; }
-        virtual RPNElem *Clone() const
-                { return new RPNString(value, false, false); }
-        const char *Get() const { return value; }
+        RPNValue(bool val) : type(bool_type) { value.boolean = val; }
+        RPNValue(long val) : type(int_type) { value.integer = val; }
+        RPNValue(double val) : type(double_type) { value.real = val; }
+        RPNValue(const char *val) : type(string_type)
+                { value.string = dupstr(val); }
+        RPNValue(const RPNValue &RPNVal) : type(RPNVal.type) {
+                if (type != string_type)
+                        value = RPNVal.value;
+                else
+                        value.string = dupstr(RPNVal.value.string);
+        }
+        virtual ~RPNValue() { if (type == string_type) delete []value.string; }
+        virtual RPNElem *Clone() const { return new RPNValue(*this); }
+        DataType Type() const { return type; }
+        bool GetBool() const {
+                if (type != bool_type)
+                        throw RuntimeError("RPNValue", "data type mismatch");
+                return value.boolean;
+        }
+        long GetInt() const {
+                if (type != int_type)
+                        throw RuntimeError("RPNValue", "data type mismatch");
+                return value.integer; 
+        }
+        double GetDouble() const {
+                if (type != double_type)
+                        throw RuntimeError("RPNValue", "data type mismatch");
+                return value.real;
+        }
+        const char *GetString() const {
+                if (type != string_type)
+                        throw RuntimeError("RPNValue", "data type mismatch");
+                return dupstr(value.string);
+        }
 };
 
 class RPNFunction : public RPNElem {
