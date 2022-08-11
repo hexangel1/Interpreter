@@ -56,7 +56,7 @@ void Parser::A()
                         B();
                 Next();
         } else {
-                throw SyntaxError("expected '{'", cur_lex);
+                B();
         }
 }
 

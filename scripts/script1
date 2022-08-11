@@ -21,9 +21,7 @@ begin
                 print ">> " ;
                 scan $b[$i];
                 if $b[$i] == "exit"
-                {
                         goto @exit;
-                }
                 inc $i;
         }
         until $b[$i - 1] == "print" or not ($i <= 5)
