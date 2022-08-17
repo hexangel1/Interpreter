@@ -2,6 +2,7 @@
 #include <cstring>
 #include "parser.hpp"
 #include "error.hpp"
+#include "buffer.hpp"
 
 Parser::Parser()
 {
@@ -63,7 +64,6 @@ void Parser::A()
 void Parser::B()
 {
         if (IsLex("if")) {
-                Next();
                 B1();
         } else if (IsLex("while")) {
                 Next();
@@ -109,23 +109,27 @@ void Parser::B()
 
 void Parser::B1()
 {
-        RPNItem *tmp = Blank();
-        C1();
-        Add(new RPNJumpFalse);
-        A();
-        if (IsLex("else")) {
+        Buffer<RPNItem*> exit_if;
+        int branches = 0;
+        do {
                 Next();
-                RPNItem *tmp2 = Blank();
+                RPNItem *tmp = Blank();
+                C1();
+                Add(new RPNJumpFalse);
+                A();
+                exit_if[branches] = Blank();
+                branches++;
                 Add(new RPNJump);
                 Add(new RPNFunNull);
                 tmp->elem = new RPNLabel(last);
+        } while (IsLex("elseif"));
+        if (IsLex("else")) {
+                Next();
                 A();
-                Add(new RPNFunNull);
-                tmp2->elem = new RPNLabel(last);
-        } else {
-                Add(new RPNFunNull);
-                tmp->elem = new RPNLabel(last);
         }
+        Add(new RPNFunNull);
+        for (int i = 0; i < branches; i++)
+                exit_if[i]->elem = new RPNLabel(last);
 }
 
 void Parser::B2()

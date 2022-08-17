@@ -3,9 +3,9 @@
 #include "scanner.hpp"
 
 const char *const Scanner::keywords[] = {
-        "program", "begin", "end",
+        "program", "begin", "end",    "endl",
         "equ",     "and",   "or",     "xor", 
-        "not",     "endl",  "if",     "else",
+        "not",     "if",    "else",   "elseif",
         "goto",    "while", "repeat", "until",
         "alloc",   "free",  "print",  "scan",
         "inc",     "dec",   "true",   "false",

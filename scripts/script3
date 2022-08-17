@@ -9,33 +9,27 @@ begin
         if ($a > $b) {
                 if ($a > $c) {
                         print "max = $a = ", $a, endl;
+                } elseif ($a == $c) {
+                        print "max = $a = $c = ", $a, endl;
                 } else {
-                        if ($a == $c) {
-                                print "max = $a = $c = ", $a, endl;
-                        } else {
-                                print "max = $c = ", $c, endl;
-                        }
+                        print "max = $c = ", $c, endl;
                 }
         } else {
                 if ($a == $b) {
                         if ($a > $c) {
                                 print "max = $a = $b = ", $a, endl;
+                        } elseif ($a == $c) {
+                                print "max = $a = $b = $c = ", $a, endl;
                         } else {
-                                if ($a == $c) {
-                                        print "max = $a = $b = $c = ", $a, endl;
-                                } else {
-                                        print "max = $c = ", $c, endl;
-                                }
+                                print "max = $c = ", $c, endl;
                         }
                 } else {
                         if ($b > $c) {
                                 print "max = $b = ", $b, endl;
+                        } elseif ($b == $c) {
+                                print "max = $b = $c = ", $b, endl;
                         } else {
-                                if ($b == $c) {
-                                        print "max = $b = $c = ", $b, endl;
-                                } else {
-                                        print "max = $c = ", $c, endl;
-                                }
+                                print "max = $c = ", $c, endl;
                         }
                 }
         }
